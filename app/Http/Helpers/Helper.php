@@ -24,12 +24,18 @@ use App\Models\Admin\ProductCategory;
 if (! function_exists('imageUpload')) {
 
     function imageUpload($image, $referencedImageId, $userId, $path) {
+
+        // echo '<pre>';
+        // print_r($path);
+        // die();
        
-   
         $imageName =  time() . "_" . $image->getClientOriginalName();
        
 
             $image->move(public_path($path), $imageName);  // Upload imgae to specified folder
+        //  echo '<pre>';
+        //  print_r($i);
+        //  die();
 
             $mediaRecord = Media::orderBy('sortOrder')->where('userId', $userId)->where('id', $referencedImageId)->first();
            
@@ -57,6 +63,8 @@ if (! function_exists('imageUpload')) {
             if (empty($mediaRecord)) {
 
                 $media->userId = $userId;
+               
+              //  $media->category_id = 1;
                 $media->status = 1;
                 $media->sortOrder = 1;
                 $media->increment('sortOrder');
@@ -68,6 +76,7 @@ if (! function_exists('imageUpload')) {
 
     }
 }
+
 
 
 if (! function_exists('imageUploadApi')) {

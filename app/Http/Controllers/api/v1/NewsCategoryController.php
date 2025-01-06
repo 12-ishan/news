@@ -58,31 +58,24 @@ class NewsCategoryController extends Controller
     
     
 
-    public function getNewsByCategory($slug)
+    public function getNewsByCategory($slug, Request $request)
     {
         $category = NewsCategory::where('slug', $slug)->first();
     
-        if (empty($category)) {
-            $response = [
+        if (!$category) {
+            return response()->json([
                 'message' => 'Category not exists',
                 'status' => '0',
-            ];
+            ], 404); 
         }
     
     
-        // $allNews = News::where('category_id', $category->id)->get();
-    
-       
-        // if ($allNews->isEmpty()) {
-        //     $response = [
-        //         'message' => 'News not found',
-        //         'status' => '0',
-        //     ];
-        // }
-    
-    
-        $news = News::where('category_id', $category->id)->get();
-    
+        $page = $request->get('page', 1); 
+        $perPage = $request->get('perPage', 6); 
+        $news = News::where('category_id', $category->id)
+                    ->where('status', 1)
+                    ->orderBy('sortOrder') 
+                    ->paginate($perPage, ['*'], 'page', $page); 
         $data = [];
         foreach ($news as $newsData) {
             $mediaName = url('/') . "/uploads/newsImage/" . getMediaName($newsData['imageId']);
@@ -91,26 +84,25 @@ class NewsCategoryController extends Controller
             $data[] = [
                 'id' => $newsData['id'],
                 'title' => $newsData['title'],
+                'meta_description' => $newsData['meta_description'],
                 'slug' => $newsData['slug'],
                 'media_name' => $mediaName,
                 'description' => $newsData['description'],
                 'news_category' => $newsCategoryName,
             ];
         }
-    
-      
-        $response = [
+
+        return response()->json([
             'message' => 'News found',
             'status' => '1',
             'news' => $data,
             'categoryName' => $category->name,
             'categorySlug' => $category->slug,
-            // 'currentPage' => $news->currentPage(),
-            // 'lastPage' => $news->lastPage(),
-        ];
-    
-        return response()->json($response, 200);
+            'currentPage' => $news->currentPage(),
+            'totalPages' => $news->lastPage(),
+        ], 200);
     }
+    
     
     
         

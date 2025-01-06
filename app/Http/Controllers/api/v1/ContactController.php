@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\contact;
+use App\Models\Admin\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 

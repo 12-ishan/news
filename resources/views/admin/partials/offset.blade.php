@@ -24,7 +24,7 @@
                     </div>
                     @endforeach
                     @endif
-                    <div class="timeline-task">
+                    {{-- <div class="timeline-task">
                         <div class="icon bg2">
                             <i class="fa fa-check"></i>
                         </div>
@@ -118,7 +118,7 @@
                         </div>
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.
                         </p>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <div id="settings" class="tab-pane fade">
@@ -135,7 +135,7 @@
                             </div>
                             <p>Keep it 'On' When you want to get all the notification.</p>
                         </div>
-                        <div class="s-settings">
+                        <div class="s-settings user-activity-toggle">
                             <div class="s-sw-title">
                                 <h5>Show recent activity</h5>
                                 <div class="s-swtich">
@@ -181,3 +181,31 @@
         </div>
     </div>
     <!-- offset area end -->
+
+<script>
+   
+$(document).ready(function () {
+    const activityState = localStorage.getItem("activity");
+    
+    if (activityState === 'false') {
+        $('.recent-activity').hide();
+        $('#switch2').prop('checked', true);
+    }  else if (activityState === 'true'){
+        $('.recent-activity').show();
+        $('#switch2').prop('checked', false);
+    }
+
+    $('#switch2').on('change', function () {
+        if ($(this).is(':checked')) {
+            localStorage.setItem("activity", 'false'); 
+            $('.recent-activity').hide(); 
+        }
+        else{
+            localStorage.setItem("activity", 'true'); 
+            $('.recent-activity').show(); 
+        }
+         
+    });
+});
+
+</script>

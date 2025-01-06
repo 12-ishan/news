@@ -24,12 +24,31 @@
                             @endforeach
 
                             <div class="row">
-                                {{-- <div class="col-6 mt-5">
+                                <div class="col-6 mt-5">
                                     <div class="form-group">
-                                        <label for="type">Type</label>
-                                        <input ocation="text" class="form-control" id="type" name="type" placeholder="Enter type" value="{{ old('type', $generalSettings->type ?? '') }}">
+                                        <label for="title">Page Title</label>
+                                        <input ocation="text" class="form-control" id="title" name="title" placeholder="Enter page title" value="{{ old('title', $websiteLogo->page_title ?? '') }}">
                                     </div>
-                                </div> --}}
+                                </div>
+
+                                <div class="col-6 mt-5">
+                                    <div class="form-group">
+                                        <label for="favicon">Favicon</label>
+                                        <!-- Removed the 'value' attribute, as it shouldn't be set for file inputs -->
+                                        <input type="file" id="favicon" name="favicon" class="form-control">
+                                    </div>
+                                </div>
+
+                                @if(isset($websiteLogo->favicon->name))
+                                <div class="col-12 mt-6">
+                                    <div class="upload-image">
+                                        <!-- Displaying the uploaded image if it exists -->
+                                        <img width="100" height="60" 
+                                            src="{{ URL::to('/') }}/uploads/favicon/{{ $websiteLogo->favicon->name }}" alt="favicon">
+                                    </div>
+                                </div>
+                            @endif
+                            
                            
                                 <div class="col-6 mt-5">
                                     <div class="form-group">

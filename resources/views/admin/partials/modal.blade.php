@@ -1,6 +1,6 @@
 <!-- Modal Review -->
 
-<div class="modal fade show" id="deleteAlertBox" style="padding-right: 15px;">
+<div class="modal fade" id="deleteAlertBox" style="padding-right: 15px;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,7 @@
 <!---------------------------------------------------------------->
 
 
-<div class="modal fade show" id="messageModal" style="padding-right: 15px;">
+<div class="modal fade" id="messageModal" style="padding-right: 15px;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -43,3 +43,13 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+
+    <!---------------------------------------------------------------->
+
+
+

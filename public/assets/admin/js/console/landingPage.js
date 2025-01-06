@@ -15,7 +15,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/admin/landing-page/destroyAll',
+            url: '/landing-page/destroyAll',
             type: 'post',
             data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
             contentType: false,       // The content type used when sending data to the server.
@@ -41,6 +41,12 @@ $(document).ready(function () {
                     $("#messageBox").html('<p>Pages information  deleted successfully</p>');
                 }
 
+            },
+            error: function (xhr) {
+                if (xhr.status === 403) {
+                    $("#messageModal").modal('show');
+                    $("#messageBox").html('<p style="color:red">You are not allowed to delete landing pages.</p>');
+                } 
             }
         });
     }));
@@ -80,7 +86,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/admin/landing-page/updateSortorder',
+            url: '/landing-page/updateSortorder',
             data: {
                 'records': JSON.stringify(arr)
             },
@@ -108,6 +114,12 @@ $(document).ready(function () {
                 $("#messageModal").modal('show');
                 $("#messageBox").html('<p>Sorry, something went wrong. Please try again after sometime.</p>');
                
+            },
+            error: function (xhr) {
+                if (xhr.status === 403) {
+                    $("#messageModal").modal('show');
+                    $("#messageBox").html('<p style="color:red">You are not allowed to update sortorder.</p>');
+                } 
             }
         });
 
@@ -131,13 +143,19 @@ $(document).ready(function () {
                 id: id,
                 status: status,
             },
-            url: '/admin/landing-page/updateStatus',
+            url: '/landing-page/updateStatus',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (result) {
                 console.log(result);
+            },
+            error: function (xhr) {
+                if (xhr.status === 403) {
+                    $("#messageModal").modal('show');
+                    $("#messageBox").html('<p style="color:red">You are not allowed to update status.</p>');
+                } 
             }
         });
 
@@ -187,7 +205,7 @@ function deleteRecord(id, title, message) {
                 id: id,
                 _method: "DELETE",
             },
-            url: '/admin/landing-page/destroy',
+            url: '/landing-page/destroy',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -208,6 +226,12 @@ function deleteRecord(id, title, message) {
 
                 }
 
+            },
+            error: function (xhr) {
+                if (xhr.status === 403) {
+                    $("#messageModal").modal('show');
+                    $("#messageBox").html('<p style="color:red">You are not allowed to delete landing page.</p>');
+                } 
             }
         });
     });

@@ -28,7 +28,9 @@ class ContactLeadsController extends Controller
      */
     public function index()
     {
-        $data = array();
+       
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_HOME_PAGE_SETTING')) ) { 
+            $data = array();
 
         $data["contact"] = Contact::orderBy('sortOrder')->get();
       
@@ -37,6 +39,10 @@ class ContactLeadsController extends Controller
         $data["activeMenu"] = 'contact leads';
        
         return view('admin.contactLeads.manage')->with($data);
+        }
+        else{
+            return view('admin.permissionDenied');
+        }
     }
 
 
@@ -53,8 +59,15 @@ class ContactLeadsController extends Controller
 
 
         if($exportFlag == 1){
+
+            if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.EXPORT_CONTACT_LEADS')) ) { 
           
             $data["contact"] = $this->getExport($formattedFromDate, $formattedToDate);
+            }
+            else{
+
+                return view('admin.permissionDenied');
+            }
           
         }
         else{
@@ -108,37 +121,28 @@ class ContactLeadsController extends Controller
 
     // End script execution
     die();
-
         
     }
   
 
     protected function getSearchData($fromDate, $toDate){
 
-        // echo '<pre>';
-        // print_r($toDate);
-        // die();
         if (!empty($fromDate) && empty($toDate)) {
             $contact = Contact::where('created_at', '>', $fromDate)
                 ->get();
              
         } elseif (empty($fromDate) && !empty($toDate)) {
-        //     echo '<pre>';
-        // print_r($toDate);
+       
         die();
             $contact = Contact::where('created_at', '<', $toDate)
                 ->get();
                 echo '<pre>';
-        // print_r($toDate);
-        // die();
+       
         } elseif (!empty($fromDate) && !empty($toDate)) {
             $contact = Contact::whereBetween('created_at', [$fromDate, $toDate])
                 ->get();
         }
-        // echo '<pre>';
-        // print_r($contact);
-        // die();
-
+      
          return $contact;
     }
 

@@ -30,7 +30,11 @@ class DashboardController extends Controller
 
     public function home()
 {
-    $activities = Activity::orderBy('created_at', 'desc')->get();// Fetch all activities
+    $activities = null; 
+    
+     if (isset(Auth::user()->roleId) && Auth::user()->roleId == 1) {
+      $activities = Activity::orderBy('created_at', 'desc')->get();// Fetch all activities
+     }
     $data = [
         "pageTitle" => 'Dashboard',
         "activeMenu" => 'dashboard'

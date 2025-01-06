@@ -157,9 +157,13 @@
                                     </div>
                                 </div>
                             </li> -->
-                             <li class="settings-btn">
-                                <i class="ti-settings"></i>
-                            </li>
+                            @if((isset(Auth::user()->roleId) && Auth::user()->roleId == 1))
+                            @if(isset($activities))
+                            <li class="settings-btn">
+                               <i class="ti-settings"></i>
+                           </li>
+                           @endif
+                           @endif
 
                              
                         </ul>

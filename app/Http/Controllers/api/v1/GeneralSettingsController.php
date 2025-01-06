@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\GeneralSettings;
 use App\Models\Admin\WebsiteLogo;
+use App\Models\Admin\Menu;
 use Illuminate\Http\Request;
 
 
@@ -43,6 +44,8 @@ class GeneralSettingsController extends Controller
     public function websiteLogo(Request $request)
     {
         $websiteLogo = WebsiteLogo::where('id', 1)->first();
+
+        $menus = Menu::with(['items.children'])->get();
     
         if (empty($websiteLogo)) {
 
@@ -55,6 +58,9 @@ class GeneralSettingsController extends Controller
             $response = [
                 'data' => [
                   'image' =>  url('/') . "/uploads/home/" . getMediaName($websiteLogo->imageId),
+                  'page_title' =>  $websiteLogo->page_title,
+                  'favicon' =>url('/') . "/uploads/favicon/" . getMediaName($websiteLogo->favicon),
+                  'menus' => $menus
                 ],
                 'status' => '1'
             ];

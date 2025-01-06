@@ -26,7 +26,10 @@ class User extends Model implements AuthenticatableContract
        
     }
 
-  
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
 
     public function image()
     {
@@ -37,10 +40,7 @@ class User extends Model implements AuthenticatableContract
         return $this->belongsTo('App\Models\Admin\Role', 'roleId', 'id');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'role_user');
-    }
+ 
 
     public function hasPermission($permission)
     {

@@ -16,7 +16,11 @@ use App\Http\Controllers\admin\LandingPagesController;
 use App\Http\Controllers\admin\ContactLeadsController;
 use App\Http\Controllers\admin\LargeFileUploadController;
 use App\Http\Controllers\admin\NewsSubCategoryController;
-use App\Http\Controllers\admin\UserActivityController;
+use App\Http\Controllers\admin\MenuManagerController;
+use App\Http\Controllers\admin\MenuManagerUnitController;
+use App\Http\Controllers\admin\MediaCategoryController;
+use App\Http\Controllers\admin\MediaController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,6 +73,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('user/{id}',[UserController::class, 'update'])->name('user.update');
     Route::get('/dashboard',[DashboardController::class, 'home'])->name('dashboard');
     Route::resource('user', UserController::class);
+    Route::post('user/updateSortorder', [UserController:: class, 'updateSortorder']);
+     Route::post('user/destroyAll', [UserController:: class, 'destroyAll']);
+     Route::post('user/updateStatus', [UserController:: class, 'updateStatus']);
 
 
       //Program Routings
@@ -76,7 +83,9 @@ Route::group(['middleware' => ['auth']], function () {
       Route::post('news/updateSortorder',[NewsController::class, 'updateSortorder']);
       Route::post('news/destroyAll',[NewsController::class, 'destroyAll']);
       Route::post('news/updateStatus',[NewsController::class, 'updateStatus']);
-      Route::get('news/sub-category/{parentCategoryId}',[NewsController::class, 'getSubcategory']);
+    Route::get('/get-media-by-category/{categoryId}', [NewsController::class, 'getMediaByCategory']);
+    Route::get('/preview-image', [NewsController::class, 'previewSelectedMedia']);
+    Route::post('/delete-media', [NewsController::class, 'deleteMedia'])->name('delete.media');
       Route::resource('news', NewsController::class);
     
    
@@ -90,6 +99,63 @@ Route::group(['middleware' => ['auth']], function () {
 
  
      //news Category Routings ends
+
+
+
+      //Media Routings
+         
+      Route::post('media/updateSortorder', [MediaController:: class, 'updateSortorder']);
+      Route::post('media/destroyAll', [MediaController:: class, 'destroyAll']);
+      Route::post('media/updateStatus', [MediaController:: class, 'updateStatus']);
+      Route::resource('media', MediaController::class);
+ 
+      //Media Routings ends
+
+
+
+
+     //Media Category Routings
+         
+     Route::post('media-category/updateSortorder', [MediaCategoryController:: class, 'updateSortorder']);
+     Route::post('media-category/destroyAll', [MediaCategoryController:: class, 'destroyAll']);
+     Route::post('media-category/updateStatus', [MediaCategoryController:: class, 'updateStatus']);
+     Route::resource('media-category', MediaCategoryController::class);
+
+     //Media Category Routings ends
+
+
+
+
+
+
+     //Menu Manager Routings
+         
+     Route::post('menu/updateSortorder', [MenuManagerController:: class, 'updateSortorder']);
+     Route::post('menu/destroyAll', [MenuManagerController:: class, 'destroyAll']);
+     Route::post('menu/updateStatus', [MenuManagerController:: class, 'updateStatus']);
+     Route::get('menu/menu-items/{id}', [MenuManagerController::class, 'menu_items'])->name('menu.menu-items');
+     Route::post('menu/add-menu-items', [MenuManagerController::class, 'addMenuItems'])->name('menu.addMenuItems');
+     Route::resource('menu', MenuManagerController::class);
+
+ 
+     //Menu Manager Routings ends
+
+
+      //Menu Manager Routings
+         
+      Route::post('menu-unit/updateSortorder', [MenuManagerUnitController:: class, 'updateSortorder']);
+      Route::post('menu-unit/destroyAll', [MenuManagerUnitController:: class, 'destroyAll']);
+      Route::post('menu-unit/updateStatus', [MenuManagerUnitController:: class, 'updateStatus']);
+      Route::get('menu-unit/menu-items/{id}', [MenuManagerUnitController::class, 'menu_items'])->name('menu-unit.menu-items');
+      Route::get('menu-unit/add-menu-items/{id}', [MenuManagerUnitController::class, 'addMenuItems'])->name('menu-unit.addMenuItems');
+      Route::post('menu-unit/store-menu-items', [MenuManagerUnitController::class, 'storeMenuItems'])->name('menu-unit.storeMenuItems');
+      Route::get('menu-unit/edit-menu-items/{id}', [MenuManagerUnitController::class, 'editMenuItems'])->name('menu-unit.editMenuItems');
+      Route::put('menu-unit/update-menu-items', [MenuManagerUnitController::class, 'updateMenuItems'])->name('menu-unit.updateMenuItems');
+      Route::delete('menu-unit/delete-menu-items/{id}', [MenuManagerUnitController::class, 'deleteMenuItems'])->name('menu-unit.deleteMenuItems');
+      Route::resource('menu-unit', MenuManagerUnitController::class);
+ 
+  
+      //Menu Manager Routings ends
 
 
      //Landing pages Routings

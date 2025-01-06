@@ -16,7 +16,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/admin/role/destroyAll',
+            url: '/role/destroyAll',
             type: 'post',
             data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
             contentType: false,       // The content type used when sending data to the server.
@@ -86,7 +86,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/admin/role/updateSortorder',
+            url: '/role/updateSortorder',
             data: {
                 'records': JSON.stringify(arr)
             },
@@ -138,7 +138,7 @@ $(document).ready(function () {
                 id: id,
                 status: status,
             },
-            url: '/admin/role/updateStatus',
+            url: '/role/updateStatus',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -195,7 +195,7 @@ function deleteRecord(id, title, message) {
                 id: id,
                 _method: "DELETE",
             },
-            url: '/admin/role/destroy',
+            url: '/role/destroy',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

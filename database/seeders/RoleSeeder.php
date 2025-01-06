@@ -16,6 +16,7 @@ class RoleSeeder extends Seeder
         DB::table('role')->insert([
             [
                 'name' => 'Admin',
+                'slug' => 'admin',
                 'status' => 1,
                 'sortOrder' => 1,
                 'created_at' => now(),
@@ -23,6 +24,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Writer',
+                'slug' => 'writer',
                 'status' => 1,
                 'sortOrder' => 2,
                 'created_at' => now(),
@@ -30,6 +32,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Editor',
+                'slug' => 'editor',
                 'status' => 1,
                 'sortOrder' => 3,
                 'created_at' => now(),

@@ -112,6 +112,11 @@
 
 @section('js')
 <script src="{{ asset('assets/admin/js/console/productCategory.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector('#description')).catch(error => console.error(error));
+    });
+</script>
 <script src="{{ asset('assets/admin/js/bootstrap.min.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script>

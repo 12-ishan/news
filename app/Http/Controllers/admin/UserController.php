@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\Admin\User;
 use App\Models\Admin\Role;
+use App\Models\Admin\RoleUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -86,12 +87,11 @@ class UserController extends Controller
            // 'username' => 'required|unique:users',
             'name' => 'required',
             'password' => 'required',
-            'roleId' => 'required',
+            'role' => 'required',
             'email' => 'required|email|unique:users',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ],
         [
-            'username.required'=> 'User name is required',
             'name.required'=> 'Name is required',
             'role.required'=> 'role is required',
         ]);
@@ -116,7 +116,7 @@ class UserController extends Controller
         // $user->meetingUsername = $request->input('meetingUsername');
         // $user->meetingPassword = $request->input('meetingPassword');
 
-        $user->roleId = $request->input('roleId');
+        $user->roleId = $request->input('role');
         $user->parentId = $request->input('parentId');
         $user->status = 1;
         $user->sortOrder = 1;
@@ -125,7 +125,7 @@ class UserController extends Controller
 
         $user->save();
 
-        $user->roles()->sync($request->roleId);
+        $user->roles()->sync($request->input('role'));
 
         return redirect()->route('user.index')->with('message', 'User Added Successfully');
     }
@@ -153,9 +153,12 @@ class UserController extends Controller
         $data = array();
 
         $data['user'] = User::find($id);
-        $data["role"] = Role::orderBy('id')->get();
-        $data["parentUser"] = User::where('roleId','3')->orderBy('sortOrder')->get();
-
+        $data["role"] = Role::orderBy('sortOrder')->get();
+        $data['hasRole'] = $data['user']->roles->pluck('id')->toArray(); 
+        // echo '<pre>';
+        // print_r($data['hasRole']);
+        // die();
+      
         $data["editStatus"] = 1;
         $data["pageTitle"] = 'Update User';
         $data["activeMenu"] = 'user';
@@ -171,16 +174,18 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
+        // echo '<pre>';
+        // print_r($request->all());
+        // die();
 
         $this->validate(request(), [
            // 'username' => 'required',
             'name' => 'required',
-            'roleId' => 'required',
+            'role' => 'required',
             'email' => 'required|email',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ],
         [
-            'username.required'=> 'User name is required',
             'name.required'=> 'Name is required',
             'role.required'=> 'role is required',
         ]);
@@ -211,11 +216,11 @@ class UserController extends Controller
 
         }
 
-        $user->roleId = $request->input('roleId');
-        $user->parentId = $request->input('parentId');
+        $user->roleId = $request->input('role');
         $user->save();
 
-        $user->roles()->sync($request->roleId);
+        $user->roles()->sync($request->input('role'));
+     
 
         return redirect()->route('user.index')->with('message', 'User Updated Successfully');
     }

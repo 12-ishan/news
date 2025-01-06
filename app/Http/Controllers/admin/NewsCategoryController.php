@@ -29,6 +29,9 @@ class NewsCategoryController extends Controller
      */
     public function index()
     {
+         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.CATEGORY_MANAGER')) ) {
+           
+         
         $data = array();
 
         $data["newsCategory"] = NewsCategory::orderBy('sortOrder')->get();
@@ -36,6 +39,11 @@ class NewsCategoryController extends Controller
         $data["pageTitle"] = 'Manage News Category';
         $data["activeMenu"] = 'News Category';
         return view('admin.newsCategory.manage')->with($data);
+         }
+         else{
+             return view('admin.permissionDenied');
+             
+         }
     }
 
     /**
@@ -45,6 +53,7 @@ class NewsCategoryController extends Controller
      */
     public function create()
     {
+         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.CREATE_CATEGORY'))  ) {
         $data = array();
 
         $data["newsParentCategory"] = NewsCategory::where('status',1)->orderBy('sortOrder')->get();
@@ -52,6 +61,10 @@ class NewsCategoryController extends Controller
         $data["pageTitle"] = 'Add News Category';
         $data["activeMenu"] = 'News Category';
         return view('admin.newsCategory.create')->with($data);
+         }
+         else{
+              return view('admin.permissionDenied');
+         }
     }
 
     /**
@@ -62,6 +75,9 @@ class NewsCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.CREATE_CATEGORY')) ) {
+           
+        
         $this->validate(request(), [
             'name' => 'required',
  
@@ -83,6 +99,10 @@ class NewsCategoryController extends Controller
 
         return redirect()->route('news-category.index')->with('message', 'Category Added Successfully');
     }
+    else{
+        return view('admin.permissionDenied');
+    }
+    }
 
     /**
      * Display the specified resource.
@@ -103,6 +123,8 @@ class NewsCategoryController extends Controller
      */
     public function edit($id)
     {
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1)  || auth()->user()->hasPermission(config('constants.EDIT_CATEGORY')) ) {
+           
         
         $data = array();
 
@@ -112,6 +134,10 @@ class NewsCategoryController extends Controller
         $data["pageTitle"] = 'Update News Category';
         $data["activeMenu"] = 'news Category';
         return view('admin.newsCategory.create')->with($data);
+        }
+        else{
+             return view('admin.permissionDenied');
+        }
     }
 
     /**
@@ -123,6 +149,9 @@ class NewsCategoryController extends Controller
      */
     public function update(Request $request)
     {
+        
+       if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1)  || auth()->user()->hasPermission(config('constants.EDIT_CATEGORY'))) {
+          
 
         $this->validate(request(), [
             'name' => 'required',
@@ -142,6 +171,10 @@ class NewsCategoryController extends Controller
 
         return redirect()->route('news-category.index')->with('message', 'category Updated Successfully');
     }
+    else{
+        return view('admin.permissionDenied');
+    }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -151,6 +184,9 @@ class NewsCategoryController extends Controller
      */
     public function destroy(Request $request)
     {
+        
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.DELETE_CATEGORY')) ) {
+           
         $id = $request->id;
         $newsCategory = NewsCategory::find($id);
         $newsCategory->delete($id);
@@ -161,6 +197,13 @@ class NewsCategoryController extends Controller
             'response' => $request->id
         ]);
     }
+    else{
+        return response()->json([
+            'status' => 0,
+            'message' => 'You are not allowed to update status.'
+        ], 403);
+    }
+    }
 
     /**
      * Remove all selected resource from storage.
@@ -170,6 +213,8 @@ class NewsCategoryController extends Controller
      */
     public function destroyAll(Request $request)
     {
+        
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.DELETE_ALL_CATEGORY')) ) {
 
         $record = $request->input('deleterecords');
 
@@ -187,6 +232,13 @@ class NewsCategoryController extends Controller
             'response' => ''
         ]);
     }
+    else{
+        return response()->json([
+            'status' => 0,
+            'message' => 'You are not allowed to update status.'
+        ], 403);
+    }
+    }
 
     /**
      * Update SortOrder.
@@ -196,6 +248,9 @@ class NewsCategoryController extends Controller
      */
     public function updateSortorder(Request $request)
     {
+        
+         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_CATEGORY_SORTORDER'))) {
+           
         $data = $request->records;
         $decoded_data = json_decode($data);
         $result = 0;
@@ -218,6 +273,13 @@ class NewsCategoryController extends Controller
 
         return response()->json($response);
     }
+    else{
+        return response()->json([
+            'status' => 0,
+            'message' => 'You are not allowed to update status.'
+        ], 403);
+    }
+    }
 
     /**
      * Update Status resource from storage.
@@ -227,6 +289,9 @@ class NewsCategoryController extends Controller
      */
     public function updateStatus(Request $request)
     {
+        
+        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_CATEGORY_STATUS'))) {
+          
         $status = $request->status;
         $id = $request->id;
 
@@ -241,6 +306,13 @@ class NewsCategoryController extends Controller
         }
 
         return response()->json($response);
+    }
+    else{
+        return response()->json([
+            'status' => 0,
+            'message' => 'You are not allowed to update status.'
+        ], 403);
+    }
     }
 
 }

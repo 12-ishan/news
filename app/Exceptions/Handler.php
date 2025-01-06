@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
     {
         return $request->expectsJson()
         ? response()->json(['error' => 'You are not authenticated. Please provide a valid token.'], 401)
-        : redirect()->guest(route('login'));
+        : redirect()->guest(route('adminLogin'));
     }
 
 

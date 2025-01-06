@@ -100,17 +100,16 @@
                                 @endif
                                 @endif --}}
 
-                                @if(isset(Auth::user()->roleId))
-                                @if(Auth::user()->roleId == 1)
                                 <div class="col-6 mt-5">
                                     <div class="form-group">
-                                        <label for="roleId">Role</label>
-                                        <select class="form-control selectpicker" id="roleId" name="roleId"
+                                        <label for="role">Role</label>
+                                        <select  class="form-control selectpicker" id="role" name="role"
                                             data-live-search="true">
                                             <option value="">Select Role</option>
+                                    {{print_r($role)}}
                                             @if(isset($role))
                                             @foreach($role as $value)
-                                            <option value="{{$value->id}}" @if (old('role', in_array($value->id, $hasRole ?? []))) 
+                                            <option value="{{$value->id}}" @if (old('role', in_array($value->id, $hasRole ?? ""))) 
                                                 selected="selected" 
                                             @endif>{{$value->name}}</option>
                                             @endforeach
@@ -118,17 +117,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                @endif
-                                @endif
+                              
+                              
 
-                                @if(isset(Auth::user()->roleId))
-                                @if(Auth::user()->roleId == 2)
-
-                                <input type="hidden" id="roleId" name="roleId" value="2">
-
-                                @endif
-                                @endif
-
+                              
                                 <div class="col-6 mt-6">
                                     <div class="form-group">
                                         <label for="name">Thumbnail</label>
@@ -182,6 +174,11 @@
 </div>
 @section('js')
 <script src="{{ asset('assets/admin/js/console/user.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector('#description')).catch(error => console.error(error));
+    });
+</script>
 @append
 
 <script type="text/javascript">

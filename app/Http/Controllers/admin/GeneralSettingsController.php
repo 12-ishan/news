@@ -23,6 +23,7 @@ class GeneralSettingsController extends Controller
 
     public function index()
     {
+         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_HOME_PAGE_SETTING')) || auth()->user()->hasPermission(config('constants.UPDATE_WEBSITE_LOGO'))) {
         $generalSettings = GeneralSettings::where('id', 1)->first();
        
         $data = [
@@ -32,12 +33,18 @@ class GeneralSettingsController extends Controller
         $data["pageTitle"] = 'Home Page Settings';
         $data["activeMenu"] = 'generalSettings';
         return view('admin.generalSettings.home')->with($data);
+         }
+         else{
+              return view('admin.permissionDenied');
+         }
     }
       
 
 public function update(Request $request)
 {
-   
+   if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_HOME_PAGE_SETTING')) || auth()->user()->hasPermission(config('constants.UPDATE_WEBSITE_LOGO'))) {
+           
+        
     $GeneralSettings = GeneralSettings::where('id', 1)->first();
     
    if ($request->hasFile('image')) { 
@@ -54,10 +61,18 @@ public function update(Request $request)
     $request->session()->flash('message', 'Contact Updated Successfully');
     return redirect()->route('home');
 }
+else{
+    return view('admin.permissionDenied');
+}
+}
 
 public function websiteLogo()
 {
-    $websiteLogo = WebsiteLogo::where('id', 1)->first();
+    if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_HOME_PAGE_SETTING')) || auth()->user()->hasPermission(config('constants.UPDATE_WEBSITE_LOGO'))) {
+        $websiteLogo = WebsiteLogo::with(['favicon', 'image'])->where('id', 1)->first();
+        // echo '<pre>';
+        // print_r($websiteLogo->favicon->name);
+        // die();
    
     $data = [
         'websiteLogo' => $websiteLogo,
@@ -66,22 +81,43 @@ public function websiteLogo()
     $data["pageTitle"] = 'website logo Setting';
     $data["activeMenu"] = 'generalSettings';
     return view('admin.generalSettings.websiteLogo')->with($data);
+    }
+    else{
+         return view('admin.permissionDenied');
+    }
 }
   
 public function updateLogo(Request $request)
 {
+  
+    if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.UPDATE_HOME_PAGE_SETTING')) || auth()->user()->hasPermission(config('constants.UPDATE_WEBSITE_LOGO'))) {
+          
    
     $websiteLogo = WebsiteLogo::where('id', 1)->first();
+
+    if ($request->hasFile('favicon')) { 
+        $mediaId = imageUpload($request->favicon, $websiteLogo->favicon ?? null, $this->userId, "uploads/favicon/");
+     
+        $websiteLogo->favicon = $mediaId;
+    }
+  
     
    if ($request->hasFile('image')) { 
         $mediaId = imageUpload($request->image, $websiteLogo->imageId ?? null, $this->userId, "uploads/home/");
-        
+      
         $websiteLogo->imageId = $mediaId;
     }
 
+  
+
+    $websiteLogo->page_title = $request->input('title');
     $websiteLogo->save();
     $request->session()->flash('message', 'Contact Updated Successfully');
     return redirect()->route('websiteLogo');
+}
+else{
+    return view('admin.permissionDenied');
+}
 }
 
 }

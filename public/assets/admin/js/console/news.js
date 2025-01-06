@@ -15,7 +15,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/admin/news/destroyAll',
+            url: '/news/destroyAll',
             type: 'post',
             data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
             contentType: false,       // The content type used when sending data to the server.
@@ -91,7 +91,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/admin/news/updateSortorder',
+            url: '/news/updateSortorder',
             data: {
                 'records': JSON.stringify(arr)
             },
@@ -143,13 +143,19 @@ $(document).ready(function () {
                 id: id,
                 status: status,
             },
-            url: '/admin/news/updateStatus',
+            url: '/news/updateStatus',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (result) {
                 console.log(result);
+            },
+            error: function (xhr) {
+                if (xhr.status === 403) {
+                    $("#messageModal").modal('show');
+                    $("#messageBox").html('<p style="color:red">You are not allowed to delete news.</p>');
+                } 
             }
         });
 
@@ -202,7 +208,7 @@ function deleteRecord(id, title, message) {
                 id: id,
                 _method: "DELETE",
             },
-            url: '/admin/news/destroy',
+            url: '/news/destroy',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

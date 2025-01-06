@@ -3,14 +3,28 @@
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions; 
 
 class NewsCategory extends Model
 {
+    use LogsActivity;
+
     protected $table = 'news_category';
+
+    protected $fillable = ['name', 'parent_id', 'slug', 'description', 'status', 'sortOrder'];
 
     public function news()
     {
         return $this->hasMany(News::class, 'category_id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])->useLogName('news category')->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}");
+        // Chain fluent methods for configuration options
+       
     }
 
     // protected static function booted()

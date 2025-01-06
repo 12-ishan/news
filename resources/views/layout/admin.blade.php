@@ -39,5 +39,13 @@
   @include('admin/partials.footer')
   @yield('js')
 
+
+  <script>
+    CKEDITOR.replace( 'description', {
+    versionCheck: false
+    // Add other configurations here as needed
+});
+
+</script>
 </body>
 </html>
