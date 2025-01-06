@@ -24,6 +24,10 @@ use App\Models\Admin\ProductCategory;
 if (! function_exists('imageUpload')) {
 
     function imageUpload($image, $referencedImageId, $userId, $path) {
+
+        // echo '<pre>';
+        // print_r($path);
+        // die();
        
         $imageName =  time() . "_" . $image->getClientOriginalName();
        
@@ -59,6 +63,8 @@ if (! function_exists('imageUpload')) {
             if (empty($mediaRecord)) {
 
                 $media->userId = $userId;
+               
+              //  $media->category_id = 1;
                 $media->status = 1;
                 $media->sortOrder = 1;
                 $media->increment('sortOrder');

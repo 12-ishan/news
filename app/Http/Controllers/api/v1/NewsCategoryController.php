@@ -71,7 +71,7 @@ class NewsCategoryController extends Controller
     
     
         $page = $request->get('page', 1); 
-        $perPage = $request->get('perPage', 2); 
+        $perPage = $request->get('perPage', 6); 
         $news = News::where('category_id', $category->id)
                     ->where('status', 1)
                     ->orderBy('sortOrder') 

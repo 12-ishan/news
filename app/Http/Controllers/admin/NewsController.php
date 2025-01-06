@@ -5,8 +5,9 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\NewsCategory;
-use App\Models\Admin\NewsSubCategory;
+use App\Models\Admin\MediaCategory;
 use App\Models\Admin\News;
+use App\Models\Admin\Media;
 use App\Models\Admin\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -40,6 +41,67 @@ class NewsController extends Controller
         });
     }
 
+
+
+    public function getMediaByCategory($categoryId)
+    {
+        $medias = Media::where('category_id', $categoryId)->get();
+        // echo '<pre>';
+        // print_r($medias);
+        // die();
+    
+        $html = '';
+        foreach ($medias as $media) {
+
+            $html .= '<label style="display: inline-block; margin: 10px; cursor: pointer;">'
+            
+            . '<button type="button" class="close delete-image" aria-label="Close" data-media-id="' . $media->id . '">'
+            . '<span aria-hidden="true">&times;</span>'
+            . '</button>'
+                   . '<input type="radio" name="media" value="' . $media->id . '" style="margin-right: 5px;" />'
+                   . '<img width="100" height="60" src="'. url('/uploads/media/' . $media->name) .'" alt="image">'
+                 
+                   . '</label>';
+        }
+    
+        return response()->json(['html' => $html]);
+    }
+    
+    
+    
+    
+
+
+    private function getMediaCategory() {
+        $mediaCategories = MediaCategory::orderBy('sort_order')->get();
+    
+        $html = '';
+        foreach ($mediaCategories as $mediaCategory) {
+          
+            $html .= '<a href="javascript:void(0);" class="category-link" data-category-id="' . $mediaCategory->id . '">'
+                   . $mediaCategory->name . '</a><br>';
+        }
+    
+        return $html;
+    }
+    
+    
+    public function previewSelectedMedia(Request $request)
+{
+    $mediaId = $request->input('media_id');
+    $media = Media::find($mediaId);
+
+    if (!$media) {
+        return response()->json(['error' => 'Media not found'], 404);
+    }
+
+    $imageUrl = $media->name;
+
+    return response()->json(['image_url' => $imageUrl,
+                              'media_id' => $mediaId ]);
+}
+
+
   
     public function index()
     {
@@ -64,6 +126,7 @@ class NewsController extends Controller
        if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.CREATE_NEWS')) ) {
 
             $data = array();
+            $data['mediaCategory'] = $this->getMediaCategory();
 
             $data["newsCategory"] = NewsCategory::where('status',1)->orderBy('sortOrder')->get();
            
@@ -87,6 +150,9 @@ class NewsController extends Controller
 
     public function store(Request $request)
     { 
+        // echo '<pre>';
+        // print_r($request->all());
+        // die();
         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.CREATE_NEWS')) ) {
            // abort(403, 'You do not have permission to add news.');
         
@@ -97,8 +163,20 @@ class NewsController extends Controller
         ]);
 
          $news = new News();
+
+
+         $browseImage = $request->input('mediaId');
+        //  echo '<pre>';
+        //  print_r($browseImage);
+        //  die();
+        if ($browseImage) {
+            $news->imageId = $browseImage;
+            // echo '<pre>';
+            // print_r($news->imageId);
+            // die();
+         }
         
-        if ($request->hasFile('image')) { 
+        else if($request->hasFile('image')) { 
 
             $mediaId = imageUpload($request->image, $news->imageId, $this->userId, "/uploads/newsImage/"); 
             $news->imageId = $mediaId;
@@ -129,12 +207,19 @@ class NewsController extends Controller
     { 
         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1)  || auth()->user()->hasPermission(config('constants.EDIT_NEWS') )) {
         $data = array();
-       
+        $data['mediaCategory'] = $this->getMediaCategory();
         $data["news"] = News::find($id);
+        // echo '<pre>';
+        // print_r($data['news']);
+        // die();
         $data["newsCategory"] = NewsCategory::orderBy('sortOrder')->get();
         $data["editStatus"] = 1;
         $data["pageTitle"] = 'Update News';
-        $data["activeMenu"] = 'News';
+        $data["activeMenu"] = 'news';
+       
+    //    echo '<pre>';
+    //    print_r( $data["news"]->imageId );
+    //    die();
         
         return view('admin.news.create')->with($data);
         }
@@ -151,8 +236,17 @@ class NewsController extends Controller
         if ((isset(Auth::user()->roleId) && Auth::user()->roleId == 1) || auth()->user()->hasPermission(config('constants.EDIT_NEWS') )) {
 
         $news = News::find($id);
+
+
+        $browseImage = $request->input('mediaId');
+        if ($browseImage) {
+            $news->imageId = $browseImage;
+            // echo '<pre>';
+            // print_r($news->imageId);
+            // die();
+         }
     
-        if ($request->hasFile('image')) {
+        else if ($request->hasFile('image')) {
             $mediaId = imageUpload($request->image, $news->imageId, $this->userId, "uploads/newsImage/");
             $news->imageId = $mediaId;
         }
@@ -307,4 +401,27 @@ class NewsController extends Controller
     }
     }
 
+
+    public function deleteMedia(Request $request)
+{
+    $mediaId = $request->input('media_id');
+
+    if (!$mediaId) {
+        return response()->json(['success' => false, 'message' => 'Media ID is required.']);
+    }
+
+    $media = Media::find($mediaId);
+
+    if (!$media) {
+        return response()->json(['success' => false, 'message' => 'Media not found.']);
+    }
+
+
+    $media->delete();
+
+    return response()->json(['success' => true, 'message' => 'Media deleted successfully.']);
+}
+
+    
+    
 }

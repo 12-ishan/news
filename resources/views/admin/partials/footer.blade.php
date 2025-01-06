@@ -39,3 +39,10 @@
     <!-- others plugins -->
     <script src="{{ asset('assets/admin/js/plugins.js') }}"></script>
     <script src="{{ asset('assets/admin/js/scripts.js') }}"></script>
+
+    
+    <script src="{{ asset('assets/bs-iconpicker/jquery-menu-editor.min.js') }}"></script>
+    <script src="{{ asset('assets/bs-iconpicker/js/iconset/iconset-fontawesome-4.7.0.min.js') }}"></script>
+    <script src="{{ asset('assets/bs-iconpicker/js/bootstrap-iconpicker.js') }}"></script>
+   
+  

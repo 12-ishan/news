@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
         GeneralSettingsSeeder::class,
         WebsiteLogoSeeder::class,
         PermissionGroupSeeder::class,
-        RoleSeeder::class
+        RoleSeeder::class,
+        MediaCategoriesSeeder::class,
        ]);
     }
 }
